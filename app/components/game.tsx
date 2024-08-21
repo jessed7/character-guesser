@@ -1,17 +1,13 @@
 "use client";
 import Image from "next/image";
 import { allCharacters } from "../characters";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import arrayShuffle from "array-shuffle";
 
 export default function Game() {
-useEffect(() => {
-    setCurrentCharacter(characters[Math.floor(Math.random() * allCharacters.length)]);
-});
-
   const [characters, setCharacters] = useState(allCharacters);
   const [currentCharacter, setCurrentCharacter] = useState(
-    characters[0]
+    characters[Math.floor(Math.random() * characters.length)]
   );
   const [notCurrent, setNotCurrent] = useState(
     arrayShuffle(
@@ -26,29 +22,88 @@ useEffect(() => {
       notCurrent[2].name,
     ])
   );
-  const [text, setText] = useState("???")
+  const [text, setText] = useState("???");
+  const [isCorrect, setIsCorrect] = useState(false);
+  console.log(currentCharacter.fullImage);
+
   return (
     <>
-    <h2> {text} </h2>
-      <Image
-        src={currentCharacter.fullImage}
-        alt="character"
-        width={500}
-        height={500}
-      />
+      <h2> {text} </h2>
+      <div></div>
+      <div>
+        {!isCorrect && (
+          <Image
+            src={currentCharacter.silhouette}
+            alt="character"
+            width={500}
+            height={600}
+            className="object-contain h-[600px] w-[500px]"
+          />
+        )}
+
+        {isCorrect && (
+          <Image
+            src={currentCharacter.fullImage}
+            alt="character"
+            width={500}
+            height={600}
+            className="object-contain h-[600px] w-[500px]"
+            //   fill={true}
+            // sizes="80vh"
+          />
+        )}
+      </div>
+
       <div className="flex flex-row justify-center items-center gap-6">
-        {options.map((option) => (<button className="w-36 bg-sky-700 text-white py-1 rounded" onClick={() => checkAnswer(option)} key={option}> {option} </button>))}
+        {!isCorrect &&
+          options.map((option) => (
+            <button
+              className="w-36 bg-sky-700 text-white py-1 rounded"
+              onClick={() => checkAnswer(option)}
+              key={option}
+            >
+              {" "}
+              {option}{" "}
+            </button>
+          ))}
+        {isCorrect && (
+          <button
+            className="w-36 bg-sky-700 text-white py-1 rounded"
+            onClick={() => cont()}
+          >
+            Continue
+          </button>
+        )}
       </div>
     </>
   );
 
+  function cont(): any {
+    console.log("continue");
+    setIsCorrect(false);
+    setText("???");
+    setCurrentCharacter(
+      characters[Math.floor(Math.random() * characters.length)]
+    );
+    setNotCurrent(
+      arrayShuffle(
+        allCharacters.filter((char) => char.name !== currentCharacter.name)
+      )
+    );
+    arrayShuffle([
+      currentCharacter.name,
+      notCurrent[0].name,
+      notCurrent[1].name,
+      notCurrent[2].name,
+    ]);
+  }
   function checkAnswer(name: string) {
     console.log(name);
     if (name === currentCharacter.name) {
-        setText("Correct!");
-    }
-    else {
-        setText("Try Again!")
+      setText("Correct!");
+      setIsCorrect(true);
+    } else {
+      setText("Try Again!");
     }
   }
 }
