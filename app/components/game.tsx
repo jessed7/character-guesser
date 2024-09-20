@@ -39,9 +39,9 @@ export default function Game() {
     );
     const newOptions = arrayShuffle([
       newChar.name,
-      notCurrent[0].name,
-      notCurrent[1].name,
-      notCurrent[2].name,
+      newNC[0].name,
+      newNC[1].name,
+      newNC[2].name,
     ]);
 
     setCurrentCharacter(newChar);
