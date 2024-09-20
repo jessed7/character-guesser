@@ -26,6 +26,45 @@ export default function Game() {
   const [isCorrect, setIsCorrect] = useState(false);
   console.log(currentCharacter.fullImage);
 
+  
+  function cont(): any {
+    console.log("continue");
+    setIsCorrect(false);
+    setText("???");
+    console.log(currentCharacter);
+    console.log(Math.floor(Math.random() * characters.length));
+    const newChar = characters[Math.floor(Math.random() * characters.length)];
+    const newNC = arrayShuffle(
+      allCharacters.filter((char) => char.name !== newChar.name)
+    );
+    const newOptions = arrayShuffle([
+      newChar.name,
+      notCurrent[0].name,
+      notCurrent[1].name,
+      notCurrent[2].name,
+    ]);
+
+    setCurrentCharacter(newChar);
+    console.log(currentCharacter);
+
+    setNotCurrent(newNC);
+    console.log(currentCharacter);
+    setOptions(newOptions);
+    console.log(currentCharacter);
+    console.log(options);
+  }
+
+  function checkAnswer(name: string) {
+    console.log(name);
+    console.log(currentCharacter);
+    if (name === currentCharacter.name) {
+      setText("Correct!");
+      setIsCorrect(true);
+    } else {
+      setText("Try Again!");
+    }
+  }
+
   return (
     <>
       <h2> {text} </h2>
@@ -77,33 +116,4 @@ export default function Game() {
       </div>
     </>
   );
-
-  function cont(): any {
-    console.log("continue");
-    setIsCorrect(false);
-    setText("???");
-    setCurrentCharacter(
-      characters[Math.floor(Math.random() * characters.length)]
-    );
-    setNotCurrent(
-      arrayShuffle(
-        allCharacters.filter((char) => char.name !== currentCharacter.name)
-      )
-    );
-    arrayShuffle([
-      currentCharacter.name,
-      notCurrent[0].name,
-      notCurrent[1].name,
-      notCurrent[2].name,
-    ]);
-  }
-  function checkAnswer(name: string) {
-    console.log(name);
-    if (name === currentCharacter.name) {
-      setText("Correct!");
-      setIsCorrect(true);
-    } else {
-      setText("Try Again!");
-    }
-  }
 }
