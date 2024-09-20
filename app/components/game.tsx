@@ -26,13 +26,15 @@ export default function Game() {
   const [isCorrect, setIsCorrect] = useState(false);
   console.log(currentCharacter.fullImage);
 
+  const [numCorrect, setNumCorrect] = useState(0);
+  const [attempts, setAttempts] = useState(0);
+
   
   function cont(): any {
     console.log("continue");
     setIsCorrect(false);
     setText("???");
-    console.log(currentCharacter);
-    console.log(Math.floor(Math.random() * characters.length));
+
     const newChar = characters[Math.floor(Math.random() * characters.length)];
     const newNC = arrayShuffle(
       allCharacters.filter((char) => char.name !== newChar.name)
@@ -45,21 +47,18 @@ export default function Game() {
     ]);
 
     setCurrentCharacter(newChar);
-    console.log(currentCharacter);
-
     setNotCurrent(newNC);
-    console.log(currentCharacter);
     setOptions(newOptions);
-    console.log(currentCharacter);
-    console.log(options);
   }
 
   function checkAnswer(name: string) {
+    setAttempts(attempts + 1);
     console.log(name);
     console.log(currentCharacter);
     if (name === currentCharacter.name) {
       setText("Correct!");
       setIsCorrect(true);
+      setNumCorrect(numCorrect + 1);
     } else {
       setText("Try Again!");
     }
@@ -68,6 +67,7 @@ export default function Game() {
   return (
     <>
       <h2> {text} </h2>
+      <h2> <span className="font-bold"> Current Score: </span> {numCorrect} / {attempts} </h2>
       <div></div>
       <div>
         {!isCorrect && (
