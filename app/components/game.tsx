@@ -30,28 +30,36 @@ export default function Game() {
   const [attempts, setAttempts] = useState(0);
 
   const [isRunning, setIsRunning] = useState(true);
-  
+
   function cont(): any {
     console.log("continue");
     setIsCorrect(false);
     setText("???");
 
-    const newCharList = characters.filter((char) => (char.name !== currentCharacter.name));
-    const newChar = newCharList[Math.floor(Math.random() * newCharList.length)];
-    const newNC = arrayShuffle(
-      allCharacters.filter((char) => char.name !== newChar.name)
+    const newCharList = characters.filter(
+      (char) => char.name !== currentCharacter.name
     );
-    const newOptions = arrayShuffle([
-      newChar.name,
-      newNC[0].name,
-      newNC[1].name,
-      newNC[2].name,
-    ]);
 
-    setCurrentCharacter(newChar);
-    setNotCurrent(newNC);
-    setOptions(newOptions);
-    setCharacters(newCharList);
+    if (newCharList.length === 0) {
+      setIsRunning(false);
+    } else {
+      const newChar =
+        newCharList[Math.floor(Math.random() * newCharList.length)];
+      const newNC = arrayShuffle(
+        allCharacters.filter((char) => char.name !== newChar.name)
+      );
+      const newOptions = arrayShuffle([
+        newChar.name,
+        newNC[0].name,
+        newNC[1].name,
+        newNC[2].name,
+      ]);
+
+      setCurrentCharacter(newChar);
+      setNotCurrent(newNC);
+      setOptions(newOptions);
+      setCharacters(newCharList);
+    }
   }
 
   function checkAnswer(name: string) {
@@ -67,56 +75,106 @@ export default function Game() {
     }
   }
 
+  function restart() {
+    const newChars = allCharacters;
+    const newChar = newChars[Math.floor(Math.random() * newChars.length)];
+    const newNC = arrayShuffle(
+      allCharacters.filter((char) => char.name !== newChar.name)
+    );
+    const newOptions = arrayShuffle([
+      newChar.name,
+      newNC[0].name,
+      newNC[1].name,
+      newNC[2].name,
+    ]);
+    const newText = "???";
+    const newIsCorrect = false;
+    const newNumCorrect = 0;
+    const newAttempts = 0;
+    const newIsRunning = true;
+
+    setCharacters(newChars);
+    setCurrentCharacter(newChar);
+    setNotCurrent(newNC);
+    setOptions(newOptions);
+    setText(newText);
+    setIsCorrect(newIsCorrect);
+    setNumCorrect(newNumCorrect);
+    setAttempts(newAttempts);
+    setIsRunning(newIsRunning);
+  }
+
   return (
     <>
-      <h2> {text} </h2>
-      <h2> <span className="font-bold"> Current Score: </span> {numCorrect} / {attempts} </h2>
-      <div></div>
-      <div>
-        {!isCorrect && (
-          <Image
-            src={currentCharacter.silhouette}
-            alt="character"
-            width={500}
-            height={600}
-            className="object-contain h-[600px] w-[500px]"
-          />
-        )}
+      {isRunning && (
+        <>
+          <h2> {text} </h2>
+          <h2>
+            {" "}
+            <span className="font-bold"> Current Score: </span> {numCorrect} /{" "}
+            {attempts}{" "}
+          </h2>
+          <div></div>
+          <div>
+            {!isCorrect && (
+              <Image
+                src={currentCharacter.silhouette}
+                alt="character"
+                width={500}
+                height={600}
+                className="object-contain h-[600px] w-[500px]"
+              />
+            )}
 
-        {isCorrect && (
-          <Image
-            src={currentCharacter.fullImage}
-            alt="character"
-            width={500}
-            height={600}
-            className="object-contain h-[600px] w-[500px]"
-            //   fill={true}
-            // sizes="80vh"
-          />
-        )}
-      </div>
+            {isCorrect && (
+              <Image
+                src={currentCharacter.fullImage}
+                alt="character"
+                width={500}
+                height={600}
+                className="object-contain h-[600px] w-[500px]"
+                //   fill={true}
+                // sizes="80vh"
+              />
+            )}
+          </div>
 
-      <div className="flex flex-row justify-center items-center gap-6">
-        {!isCorrect &&
-          options.map((option) => (
-            <button
-              className="w-36 bg-sky-700 text-white py-1 rounded"
-              onClick={() => checkAnswer(option)}
-              key={option}
-            >
-              {" "}
-              {option}{" "}
-            </button>
-          ))}
-        {isCorrect && (
-          <button
-            className="w-36 bg-sky-700 text-white py-1 rounded"
-            onClick={() => cont()}
-          >
-            Continue
-          </button>
-        )}
-      </div>
+          <div className="flex flex-row justify-center items-center gap-6">
+            {!isCorrect &&
+              options.map((option) => (
+                <button
+                  className="w-44 bg-sky-700 text-white py-1 rounded"
+                  onClick={() => checkAnswer(option)}
+                  key={option}
+                >
+                  {" "}
+                  {option}{" "}
+                </button>
+              ))}
+            {isCorrect && (
+              <button
+                className="w-44 bg-sky-700 text-white py-1 rounded"
+                onClick={() => cont()}
+              >
+                Continue
+              </button>
+            )}
+          </div>
+        </>
+      )}
+
+      {!isRunning && (
+        <>
+          <h2> Thanks for Playing! </h2>
+          <h2>
+            {" "}
+            <span className="font-bold"> Final Score: </span> {numCorrect} /{" "}
+            {attempts}{" "}
+          </h2>
+
+          <button className="w-44 bg-sky-700 text-white py-1 rounded" onClick={() => (restart())}> Start Over </button>
+        </>
+      )}
     </>
   );
 }
