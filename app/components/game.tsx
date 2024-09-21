@@ -29,13 +29,15 @@ export default function Game() {
   const [numCorrect, setNumCorrect] = useState(0);
   const [attempts, setAttempts] = useState(0);
 
+  const [isRunning, setIsRunning] = useState(true);
   
   function cont(): any {
     console.log("continue");
     setIsCorrect(false);
     setText("???");
 
-    const newChar = characters[Math.floor(Math.random() * characters.length)];
+    const newCharList = characters.filter((char) => (char.name !== currentCharacter.name));
+    const newChar = newCharList[Math.floor(Math.random() * newCharList.length)];
     const newNC = arrayShuffle(
       allCharacters.filter((char) => char.name !== newChar.name)
     );
@@ -49,6 +51,7 @@ export default function Game() {
     setCurrentCharacter(newChar);
     setNotCurrent(newNC);
     setOptions(newOptions);
+    setCharacters(newCharList);
   }
 
   function checkAnswer(name: string) {
